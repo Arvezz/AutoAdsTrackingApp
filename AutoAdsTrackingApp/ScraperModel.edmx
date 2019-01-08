@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ScraperModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CarBrands">
+          <Key>
+            <PropertyRef Name="CarBrandId" />
+          </Key>
+          <Property Name="CarBrandId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WebPageId" Type="int" Nullable="false" />
+          <Property Name="CarBrandName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CarBrandValue" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CarModels">
+          <Key>
+            <PropertyRef Name="CarModelId" />
+          </Key>
+          <Property Name="CarModelId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CarBrandId" Type="int" Nullable="false" />
+          <Property Name="CarModelName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CarModelValue" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WebPages">
+          <Key>
+            <PropertyRef Name="WebPageId" />
+          </Key>
+          <Property Name="WebPageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WebPageName" Type="varchar" MaxLength="100" />
+          <Property Name="HomePageAdress" Type="varchar" MaxLength="100" />
+          <Property Name="CarBrandKey" Type="varchar" MaxLength="100" />
+          <Property Name="CarModelKey" Type="varchar" MaxLength="100" />
+          <Property Name="CarYearsFromKey" Type="varchar" MaxLength="100" />
+          <Property Name="CarYearsToKey" Type="varchar" MaxLength="100" />
+          <Property Name="CarPriceFromKey" Type="varchar" MaxLength="100" />
+          <Property Name="CarPriceToKey" Type="varchar" MaxLength="100" />
+          <Property Name="CarFuelKey" Type="varchar" MaxLength="100" />
+          <Property Name="AdditionalKey" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <Association Name="FK_CarBrands_WebPages">
+          <End Role="WebPages" Type="Self.WebPages" Multiplicity="1" />
+          <End Role="CarBrands" Type="Self.CarBrands" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WebPages">
+              <PropertyRef Name="WebPageId" />
+            </Principal>
+            <Dependent Role="CarBrands">
+              <PropertyRef Name="WebPageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CarModels_CarBrands">
+          <End Role="CarBrands" Type="Self.CarBrands" Multiplicity="1" />
+          <End Role="CarModels" Type="Self.CarModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CarBrands">
+              <PropertyRef Name="CarBrandId" />
+            </Principal>
+            <Dependent Role="CarModels">
+              <PropertyRef Name="CarBrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ScraperModelStoreContainer">
+          <EntitySet Name="CarBrands" EntityType="Self.CarBrands" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CarModels" EntityType="Self.CarModels" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WebPages" EntityType="Self.WebPages" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CarBrands_WebPages" Association="Self.FK_CarBrands_WebPages">
+            <End Role="WebPages" EntitySet="WebPages" />
+            <End Role="CarBrands" EntitySet="CarBrands" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CarModels_CarBrands" Association="Self.FK_CarModels_CarBrands">
+            <End Role="CarBrands" EntitySet="CarBrands" />
+            <End Role="CarModels" EntitySet="CarModels" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ScraperModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CarBrand">
+          <Key>
+            <PropertyRef Name="CarBrandId" />
+          </Key>
+          <Property Name="CarBrandId" Type="Int32" Nullable="false" />
+          <Property Name="WebPageId" Type="Int32" Nullable="false" />
+          <Property Name="CarBrandName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CarBrandValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="WebPage" Relationship="Self.FK_CarBrands_WebPages" FromRole="CarBrands" ToRole="WebPages" />
+          <NavigationProperty Name="CarModels" Relationship="Self.FK_CarModels_CarBrands" FromRole="CarBrands" ToRole="CarModels" />
+        </EntityType>
+        <EntityType Name="CarModel">
+          <Key>
+            <PropertyRef Name="CarModelId" />
+          </Key>
+          <Property Name="CarModelId" Type="Int32" Nullable="false" />
+          <Property Name="CarBrandId" Type="Int32" Nullable="false" />
+          <Property Name="CarModelName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CarModelValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CarBrand" Relationship="Self.FK_CarModels_CarBrands" FromRole="CarModels" ToRole="CarBrands" />
+        </EntityType>
+        <EntityType Name="WebPage">
+          <Key>
+            <PropertyRef Name="WebPageId" />
+          </Key>
+          <Property Name="WebPageId" Type="Int32" Nullable="false" />
+          <Property Name="WebPageName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HomePageAdress" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarBrandKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarModelKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarYearsFromKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarYearsToKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarPriceFromKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarPriceToKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CarFuelKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CarBrands" Relationship="Self.FK_CarBrands_WebPages" FromRole="WebPages" ToRole="CarBrands" />
+          <Property Name="AdditionalKey" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_CarBrands_WebPages">
+          <End Role="WebPages" Type="Self.WebPage" Multiplicity="1" />
+          <End Role="CarBrands" Type="Self.CarBrand" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WebPages">
+              <PropertyRef Name="WebPageId" />
+            </Principal>
+            <Dependent Role="CarBrands">
+              <PropertyRef Name="WebPageId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CarModels_CarBrands">
+          <End Role="CarBrands" Type="Self.CarBrand" Multiplicity="1" />
+          <End Role="CarModels" Type="Self.CarModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CarBrands">
+              <PropertyRef Name="CarBrandId" />
+            </Principal>
+            <Dependent Role="CarModels">
+              <PropertyRef Name="CarBrandId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ScraperEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CarBrands" EntityType="Self.CarBrand" />
+          <EntitySet Name="CarModels" EntityType="Self.CarModel" />
+          <EntitySet Name="WebPages" EntityType="Self.WebPage" />
+          <AssociationSet Name="FK_CarBrands_WebPages" Association="Self.FK_CarBrands_WebPages">
+            <End Role="WebPages" EntitySet="WebPages" />
+            <End Role="CarBrands" EntitySet="CarBrands" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CarModels_CarBrands" Association="Self.FK_CarModels_CarBrands">
+            <End Role="CarBrands" EntitySet="CarBrands" />
+            <End Role="CarModels" EntitySet="CarModels" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ScraperModelStoreContainer" CdmEntityContainer="ScraperEntities">
+          <EntitySetMapping Name="CarBrands">
+            <EntityTypeMapping TypeName="ScraperModel.CarBrand">
+              <MappingFragment StoreEntitySet="CarBrands">
+                <ScalarProperty Name="CarBrandId" ColumnName="CarBrandId" />
+                <ScalarProperty Name="WebPageId" ColumnName="WebPageId" />
+                <ScalarProperty Name="CarBrandName" ColumnName="CarBrandName" />
+                <ScalarProperty Name="CarBrandValue" ColumnName="CarBrandValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CarModels">
+            <EntityTypeMapping TypeName="ScraperModel.CarModel">
+              <MappingFragment StoreEntitySet="CarModels">
+                <ScalarProperty Name="CarModelId" ColumnName="CarModelId" />
+                <ScalarProperty Name="CarBrandId" ColumnName="CarBrandId" />
+                <ScalarProperty Name="CarModelName" ColumnName="CarModelName" />
+                <ScalarProperty Name="CarModelValue" ColumnName="CarModelValue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WebPages">
+            <EntityTypeMapping TypeName="ScraperModel.WebPage">
+              <MappingFragment StoreEntitySet="WebPages">
+                <ScalarProperty Name="AdditionalKey" ColumnName="AdditionalKey" />
+                <ScalarProperty Name="WebPageId" ColumnName="WebPageId" />
+                <ScalarProperty Name="WebPageName" ColumnName="WebPageName" />
+                <ScalarProperty Name="HomePageAdress" ColumnName="HomePageAdress" />
+                <ScalarProperty Name="CarBrandKey" ColumnName="CarBrandKey" />
+                <ScalarProperty Name="CarModelKey" ColumnName="CarModelKey" />
+                <ScalarProperty Name="CarYearsFromKey" ColumnName="CarYearsFromKey" />
+                <ScalarProperty Name="CarYearsToKey" ColumnName="CarYearsToKey" />
+                <ScalarProperty Name="CarPriceFromKey" ColumnName="CarPriceFromKey" />
+                <ScalarProperty Name="CarPriceToKey" ColumnName="CarPriceToKey" />
+                <ScalarProperty Name="CarFuelKey" ColumnName="CarFuelKey" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
